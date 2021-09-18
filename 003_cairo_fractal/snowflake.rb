@@ -51,37 +51,39 @@ class Figure
   end
 end
 
-size = 600.0
-margin = 50.0
-base_length = size - (margin * 2)
+size = 3600.0
+margin = 10.0
+base_length = (Math.sqrt(3) / 2) * (size - (margin * 2))
 top_x = size / 2
 top_y = 10
 
 surface = Cairo::ImageSurface.new(:argb32, size, size)
-context = Cairo::Context.new(surface)
-
-# 背景
-context.fill do
-  context.set_source_color(Cairo::Color::WHITE)
-  context.rectangle(0, 0, size, size)
-end
 
 def rad_pi(string)
   Math::PI * Rational(string)
 end
 
-context.set_source_color(Cairo::Color::BLACK)
 line1 = Line.new(top_x, top_y, base_length, rad_pi('2/3'))
 line2 = Line.new(*line1.end_point, base_length, rad_pi(0))
 line3 = Line.new(*line2.end_point, base_length, rad_pi('-2/3'))
 figure = Figure.new(line1, line2, line3)
-figure.add_koch_step!
-context.stroke do
-  context.move_to(line1.x, line1.y)
-  figure.points.each do |point_x, point_y|
-    context.line_to(point_x, point_y)
-  end
-end
-
 Dir.mkdir('tmp/snowflakes') unless Dir.exist?('tmp/snowflakes')
-context.target.write_to_png('tmp/snowflakes/snowflake.png')
+
+(0..5).each do |index|
+  context = Cairo::Context.new(surface)
+  # 背景
+  context.fill do
+    context.set_source_color(Cairo::Color::WHITE)
+    context.rectangle(0, 0, size, size)
+  end
+  context.set_source_color(Cairo::Color::BLACK)
+  context.stroke do
+    context.move_to(line1.x, line1.y)
+    index.times { figure.add_koch_step! }
+    figure.points.each do |point_x, point_y|
+      context.line_to(point_x, point_y)
+    end
+  end
+  filename = "tmp/snowflakes/snowflake_#{format('%04d', index)}.png"
+  context.target.write_to_png(filename)
+end
