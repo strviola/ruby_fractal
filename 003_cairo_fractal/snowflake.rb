@@ -53,9 +53,8 @@ def koch_points_level2(base_x, base_y, base_length)
   points
 end
 
-context.stroke do
-  # 第1段階
-  context.set_source_color(Cairo::Color::BLACK)
+context.set_source_color(Cairo::Color::GRAY)
+context.fill do
   context.move_to(top_x, top_y)
   koch_points_level2(top_x, top_y, base_length).each do |point_x, point_y|
     context.line_to(point_x, point_y)
