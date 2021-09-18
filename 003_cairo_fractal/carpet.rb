@@ -7,27 +7,28 @@ surface = Cairo::ImageSurface.new(format, size, size)
 context = Cairo::Context.new(surface)
 
 # 背景
-color_purple = [0.2, 0, 0.2]
-context.set_source_rgb(*color_purple)
+context.set_source_rgb(0.2, 0, 0.2) # dark purple
 context.rectangle(0, 0, size, size)
 context.fill
+context.set_source_rgb(1, 1, 1)
 
-# 1段階目
-color_white = [1, 1, 1]
-context.set_source_rgb(*color_white)
-next_size = size / 3
-context.rectangle(next_size, next_size, next_size, next_size)
-context.fill
-
-# 2段階目
-next_size = next_size / 3
-[1, 4, 7].each do |index_x|
-  [1, 4, 7].each do |index_y|
-    x = next_size * index_x
-    y = next_size * index_y
-    context.rectangle(x, y, next_size, next_size)
-    context.fill
+def draw_squares(cairo_context, base_size, step)
+  division_level = 3 ** step
+  square_size = base_size / division_level
+  points = (0..division_level).select { _1 % 3 == 1 }
+  points.each do |index_x|
+    points.each do |index_y|
+      x = square_size * index_x
+      y = square_size * index_y
+      cairo_context.rectangle(x, y, square_size, square_size)
+      cairo_context.fill
+    end
   end
 end
+
+# カーペット描画
+draw_squares(context, size, 1)
+draw_squares(context, size, 2)
+draw_squares(context, size, 3)
 
 surface.write_to_png('tmp/sierpinski_carpet.png')
