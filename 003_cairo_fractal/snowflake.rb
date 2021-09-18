@@ -22,11 +22,30 @@ def polar_next_point(base_x, base_y, radius, angle)
   [base_x + diff_x, base_y + diff_y]
 end
 
-def koch_points_level1(base_x, base_y, base_length)
+def koch_points_level2(base_x, base_y, base_length)
   points = [[base_x, base_y]]
-  point_x, point_y = polar_next_point(base_x, base_y, base_length, rad_pi('2/3'))
+  length = base_length / 3
+  point_x, point_y = polar_next_point(base_x, base_y, length, rad_pi('2/3'))
   points << [point_x, point_y]
-  point_x, point_y = polar_next_point(point_x, point_y, base_length, rad_pi(0))
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi(-1))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('1/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('2/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi(0))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('1/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('-1/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi(0))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('-2/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi('-1/3'))
+  points << [point_x, point_y]
+  point_x, point_y = polar_next_point(point_x, point_y, length, rad_pi(-1))
   points << [point_x, point_y]
   points
 end
@@ -38,7 +57,7 @@ context.stroke do
   top_y = margin
   context.move_to(top_x, top_y)
   base_length = size - (margin * 2)
-  koch_points_level1(top_x, top_y, base_length).each do |point_x, point_y|
+  koch_points_level2(top_x, top_y, base_length).each do |point_x, point_y|
     context.line_to(point_x, point_y)
   end
   context.line_to(top_x, top_y)
