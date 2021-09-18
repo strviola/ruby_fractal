@@ -35,6 +35,22 @@ class Line
   end
 end
 
+class Figure
+  attr_accessor :lines
+
+  def initialize(*lines)
+    @lines = lines
+  end
+
+  def add_koch_step!
+    @lines = @lines.map(&:add_line_koch_step).flatten
+  end
+
+  def points
+    @lines.map(&:end_point)
+  end
+end
+
 size = 600.0
 margin = 50.0
 base_length = size - (margin * 2)
@@ -58,16 +74,12 @@ context.set_source_color(Cairo::Color::BLACK)
 line1 = Line.new(top_x, top_y, base_length, rad_pi('2/3'))
 line2 = Line.new(*line1.end_point, base_length, rad_pi(0))
 line3 = Line.new(*line2.end_point, base_length, rad_pi('-2/3'))
+figure = Figure.new(line1, line2, line3)
+figure.add_koch_step!
 context.stroke do
   context.move_to(line1.x, line1.y)
-  line1.add_line_koch_step.each do |line|
-    context.line_to(*line.end_point)
-  end
-  line2.add_line_koch_step.each do |line|
-    context.line_to(*line.end_point)
-  end
-  line3.add_line_koch_step.each do |line|
-    context.line_to(*line.end_point)
+  figure.points.each do |point_x, point_y|
+    context.line_to(point_x, point_y)
   end
 end
 
