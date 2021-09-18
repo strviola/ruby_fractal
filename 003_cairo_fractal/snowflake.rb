@@ -12,19 +12,27 @@ context.fill do
   context.rectangle(0, 0, size, size)
 end
 
+def rad_pi(string)
+  Math::PI * Rational(string)
+end
+
+def polar_next_point(base_x, base_y, radius, angle)
+  diff_x = radius * Math.cos(angle)
+  diff_y = radius * Math.sin(angle)
+  [base_x + diff_x, base_y + diff_y]
+end
+
 context.stroke do
   # 第1段階
   context.set_source_color(Cairo::Color::BLACK)
   top_x = size / 2
   top_y = margin
   context.move_to(top_x, top_y)
-  triangle_length = size - (margin * 2)
-  rad = Math::PI * Rational('2/3')
-  triangle_x1 = top_x - triangle_length * Math.cos(rad)
-  triangle_y = margin + triangle_length * Math.sin(rad)
-  context.line_to(triangle_x1, triangle_y)
-  triangle_x2 = top_x + triangle_length * Math.cos(rad)
-  context.line_to(triangle_x2, triangle_y)
+  base_length = size - (margin * 2)
+  point_x, point_y = polar_next_point(top_x, top_y, base_length, rad_pi('2/3'))
+  context.line_to(point_x, point_y)
+  point_x, point_y = polar_next_point(point_x, point_y, base_length, 0)
+  context.line_to(point_x, point_y)
   context.line_to(top_x, top_y)
 end
 
