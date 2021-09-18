@@ -1,7 +1,10 @@
 require 'cairo'
 
 size = 600.0
-margin = 100.0
+margin = 50.0
+base_length = size - (margin * 2)
+top_x = size / 2
+top_y = 10
 
 surface = Cairo::ImageSurface.new(:argb32, size, size)
 context = Cairo::Context.new(surface)
@@ -53,10 +56,7 @@ end
 context.stroke do
   # 第1段階
   context.set_source_color(Cairo::Color::BLACK)
-  top_x = size / 2
-  top_y = margin
   context.move_to(top_x, top_y)
-  base_length = size - (margin * 2)
   koch_points_level2(top_x, top_y, base_length).each do |point_x, point_y|
     context.line_to(point_x, point_y)
   end
