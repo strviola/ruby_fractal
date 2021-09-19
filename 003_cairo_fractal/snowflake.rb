@@ -36,6 +36,7 @@ class Line
 end
 
 class Figure
+  THRESHOLD = 0.1
   attr_accessor :lines
 
   def initialize(*lines)
@@ -43,6 +44,7 @@ class Figure
   end
 
   def add_koch_step!
+    raise 'Line length is less than threshold' if @lines.any? { _1.length < THRESHOLD }
     @lines = @lines.map(&:add_line_koch_step).flatten
   end
 
@@ -76,6 +78,7 @@ Dir.mkdir('tmp/snowflakes') unless Dir.exist?('tmp/snowflakes')
     context.set_source_color(Cairo::Color::WHITE)
     context.rectangle(0, 0, size, size)
   end
+  # 図形の描画
   context.set_source_color(Cairo::Color::BLACK)
   context.stroke do
     context.move_to(line1.x, line1.y)
@@ -86,4 +89,6 @@ Dir.mkdir('tmp/snowflakes') unless Dir.exist?('tmp/snowflakes')
   end
   filename = "tmp/snowflakes/snowflake_#{format('%04d', index)}.png"
   context.target.write_to_png(filename)
+rescue => e
+  puts e.message
 end
