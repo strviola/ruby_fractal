@@ -24,4 +24,8 @@ def mandel(w, h, w2, h2, zoom)
 end
 
 data = mandel(600, 600, 0.8, 0.5, 2)
-pp data
+# Grayscale to RGB
+graphic_data = UInt8.zeros(600, 600, 3)
+graphic_data[true, true, 1] = (SFloat.cast(data) / 100 * 255)
+pixbuf = GdkPixbuf::Pixbuf.new(data: graphic_data.to_string, width: 600, height: 600)
+pixbuf.save('tmp/mandel.png')
